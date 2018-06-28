@@ -38,7 +38,9 @@ class NewVisitorTest(unittest.TestCase):
         self.assertEqual('Your quiz has been added', add_text.text)
 
         # หลังจากตั้งคำถามเสร็จตั้นกดลิงค์ home กลับไปที่หน้าแรก
-        self.wait_for_link_text('Home', 'http://localhost:8000/')
+        home_link = self.browser.find_element_by_link_text('Home')
+        self.assertEqual(home_link.get_attribute('href'), 'http://localhost:8000/')
+        home_link.click()
 
 if __name__ == '__main__':
     unittest.main(warnings='ignore')
