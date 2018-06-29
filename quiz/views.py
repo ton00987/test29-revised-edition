@@ -13,3 +13,8 @@ def add_quiz(request):
 
 def success(request):
     return render(request, 'success.html')
+
+def answer(request):
+    # To arrange in descending order. It means your quiz has just been added  will appear at the top.
+    quizs = Quiz.objects.all().order_by('-id')
+    return render(request, 'answer.html', {'quizs': quizs})

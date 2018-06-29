@@ -12,7 +12,7 @@ class NewVisitorTest(unittest.TestCase):
     def tearDown(self):
         self.browser.quit()
 
-    def test_can_add_a_quiz_for_visitor(self):
+    def test_can_add_and_answer_a_quiz_for_visitor(self):
         # ตั้นได้ยินเพื่อนคุยกันเกี่ยวกับ web app ตอบคำถาม True False
         # ตั้นสนใจจึงทดลองเข้าไปตามลิ้งที่เพื่อนให้มา
         self.browser.get('http://localhost:8000/')
@@ -41,6 +41,25 @@ class NewVisitorTest(unittest.TestCase):
         home_link = self.browser.find_element_by_link_text('Home')
         self.assertEqual(home_link.get_attribute('href'), 'http://localhost:8000/')
         home_link.click()
+
+        # ตั้นทดลองไปตอบคำถาม
+        ans_link = self.browser.find_element_by_link_text('Answer')
+        self.assertEqual(ans_link.get_attribute('href'), 'http://localhost:8000/answer')
+        ans_link.click()
+
+        # ตั้นพบคำถามที่พึ่งสร้างอยู่บนสุดและตอบคำถามนั้น
+        question = self.browser.find_element_by_tag_name('p')
+        self.assertIn('1+1=2', question.text)
+
+        ans = self.browser.find_element_by_tag_name('input')
+        self.assertEqual(ans.get_attribute('name'), 'ans1')
+        ans.click()
+
+        # ตั้นพบหน้าบอกว่าคุณตอบถูก 1 ข้อ
+        congrat_text = self.browser.find_element_by_tag_name('p')
+        self.assertIn('You answered 1 question correctly', congrat_text.text)
+
+        # ตั้นพอใจแล้วจึงปิดเว็บไป
 
 if __name__ == '__main__':
     unittest.main(warnings='ignore')

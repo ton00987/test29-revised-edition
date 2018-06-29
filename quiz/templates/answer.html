@@ -1,0 +1,23 @@
+<html>
+    <head>
+        <title>Answer</title>
+    </head>
+
+    <body>
+        <h1>Answer the question</h1>
+        <form method="POST" action="/answer/score">
+            {% for q in quizs %}
+                <p>Question:&nbsp{{ q.ques }}<br>
+                Ans:</p>
+                <input type="radio" name="ans{{ forloop.counter }}" value="True">True<br>
+                <input type="radio" name="ans{{ forloop.counter }}" value="False">False<br><br>
+            {% endfor %}
+            <input type="submit" id="id_ans_button" value="Answer">
+            {% csrf_token %}
+        </form>
+
+        <br>
+
+        <a href="/">Home</a>
+    </body>
+</html>

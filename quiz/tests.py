@@ -31,6 +31,12 @@ class AddQuizPageTest(TestCase):
         self.client.get('/addquiz')
         self.assertEqual(Quiz.objects.count(), 0)
 
+class AnswerPageTest(TestCase):
+
+    def test_uses_answer_template(self):
+        response = self.client.get('/answer')
+        self.assertTemplateUsed(response, 'answer.html')
+
 class QuizModelTest(TestCase):
 
     def test_saving_and_retrieving_quizs(self):
