@@ -12,16 +12,38 @@ class NewVisitorTest(unittest.TestCase):
     def tearDown(self):
         self.browser.quit()
 
+    def wait_for_link_text(self, link_text, link):
+        start_time = time.time()
+        while True:
+            try:
+                web_link = self.browser.find_element_by_link_text(link_text)
+                self.assertEqual(web_link.get_attribute('href'), link)
+                web_link.click()
+                return
+            except (AssertionError, WebDriverException) as e:
+                if time.time() - start_time > MAX_WAIT:
+                    raise e
+                time.sleep(0.5)
+
+    def wait_for_text_in_tag_name_p(self, text):
+        start_time = time.time()
+        while True:
+            try:
+                web_text = self.browser.find_element_by_tag_name('p')
+                self.assertIn(text, web_text.text)
+                return
+            except (AssertionError, WebDriverException) as e:
+                if time.time() - start_time > MAX_WAIT:
+                    raise e
+                time.sleep(0.5)
+
     def test_can_add_and_answer_a_quiz_for_visitor(self):
         # ตั้นได้ยินเพื่อนคุยกันเกี่ยวกับ web app ตอบคำถาม True False
         # ตั้นสนใจจึงทดลองเข้าไปตามลิ้งที่เพื่อนให้มา
         self.browser.get('http://localhost:8000/')
 
         # ตั้นเห็นว่าสามารถเลือกเพิ่มคำถามให้กับ web app นี้ ตั้นเลือกเพิ่มคำถาม
-        quiz_link = self.browser.find_element_by_link_text('Add quiz')
-        self.assertEqual(quiz_link.get_attribute('href'), 'http://localhost:8000/addquiz')
-        quiz_link.click()
-
+        self.wait_for_link_text('Add quiz', 'http://localhost:8000/addquiz')
 
         # ตั้นใส่คำถามว่า "1+1=2" และเลือกคำตอบเป็น True จากนั้นกด submit
         inputbox = self.browser.find_elements_by_tag_name('input')
@@ -34,22 +56,16 @@ class NewVisitorTest(unittest.TestCase):
         inputbox[3].click()
 
         # ตั้นพบหน้าบอกว่า "Your quiz has been added"
-        add_text = self.browser.find_element_by_tag_name('p')
-        self.assertEqual('Your quiz has been added', add_text.text)
+        self.wait_for_text_in_tag_name_p('Your quiz has been added')
 
         # หลังจากตั้งคำถามเสร็จตั้นกดลิงค์ home กลับไปที่หน้าแรก
-        home_link = self.browser.find_element_by_link_text('Home')
-        self.assertEqual(home_link.get_attribute('href'), 'http://localhost:8000/')
-        home_link.click()
+        self.wait_for_link_text('Home', 'http://localhost:8000/')
 
         # ตั้นทดลองไปตอบคำถาม
-        ans_link = self.browser.find_element_by_link_text('Answer')
-        self.assertEqual(ans_link.get_attribute('href'), 'http://localhost:8000/answer')
-        ans_link.click()
+        self.wait_for_link_text('Answer', 'http://localhost:8000/answer')
 
         # ตั้นพบคำถามที่พึ่งสร้างอยู่บนสุดและตอบคำถามนั้น
-        question = self.browser.find_element_by_tag_name('p')
-        self.assertIn('1+1=2', question.text)
+        self.wait_for_text_in_tag_name_p('1+1=2')
 
         ans = self.browser.find_element_by_tag_name('input')
         self.assertEqual(ans.get_attribute('name'), 'ans1')
@@ -61,8 +77,7 @@ class NewVisitorTest(unittest.TestCase):
         ans_button.click()
 
         # ตั้นพบหน้าบอกว่าคุณตอบถูก 1 ข้อ
-        congrat_text = self.browser.find_element_by_tag_name('p')
-        self.assertIn('You answered 1 question correctly', congrat_text.text)
+        self.wait_for_text_in_tag_name_p('You answered 1 question correctly')
 
         # ตั้นพอใจแล้วจึงปิดเว็บไป
 
