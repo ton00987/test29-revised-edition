@@ -55,6 +55,11 @@ class NewVisitorTest(unittest.TestCase):
         self.assertEqual(ans.get_attribute('name'), 'ans1')
         ans.click()
 
+        time.sleep(3)
+        ans_button = self.browser.find_element_by_id('id_ans_button')
+        self.assertEqual(ans_button.get_attribute('value'), 'Answer')
+        ans_button.click()
+
         # ตั้นพบหน้าบอกว่าคุณตอบถูก 1 ข้อ
         congrat_text = self.browser.find_element_by_tag_name('p')
         self.assertIn('You answered 1 question correctly', congrat_text.text)

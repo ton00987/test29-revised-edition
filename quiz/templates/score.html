@@ -1,0 +1,27 @@
+<html>
+    <head>
+        <title>Score</title>
+    </head>
+
+    <body>
+        {% if score == 0 %}
+            <h1>Oops</h1>
+            <p>You answered all wrong question</p>
+
+        {% elif score == 1 %}
+            <h1>Congratulation</h1>
+            <p>You answered 1 question correctly</p>
+
+        {% elif score > 1 %}
+            <h1>Congratulation</h1>
+            <p>You answered {{ score }} questions correctly</p>
+        
+        {% endif %}
+
+        <br>
+
+        <a href="/answer">Answer again</a><br>
+        <a href="/">Home</a>
+
+    </body>
+</html>
